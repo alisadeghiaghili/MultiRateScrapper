@@ -21,7 +21,7 @@ except FileNotFoundError:
 dfNew = pd.DataFrame(columns = ["datetime", "rate"])
 dfNew.loc[0] = [datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'), rate]
 try: 
-    dfOld = pd.read_csv(path + r'\\' + fileName, )
+    dfOld = pd.read_csv(path + r'\\' + fileName)
     dfAll = pd.concat([dfOld, dfNew])
     dfAll.to_csv(path + r'\\' + fileName, index=False)
 except FileNotFoundError:
