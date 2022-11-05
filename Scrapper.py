@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 from datetime import datetime
+import pandas as pd
 
 URL = "https://www.tgju.org/"
 page = requests.get(URL)
@@ -15,14 +16,13 @@ try:
     os.listdir(path)
 except FileNotFoundError:
     os.mkdir(path)
-
-string = ','.join([datetime.strftime(datetime.togitday(), '%Y-%m-%d'), rate])
-
+    
+    
+dfNew = pd.DataFrame(columns = ["datetime", "rate"])
+dfNew.loc[0] = [datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'), rate]
 try: 
-    with open(path + r'\\' + fileName, 'a') as file:
-        file.write(rate)
+    dfOld = pd.read_csv(path + r'\\' + fileName, )
+    dfAll = pd.concat([dfOld, dfNew])
+    dfAll.to_csv(path + r'\\' + fileName, index=False)
 except FileNotFoundError:
-    with open(path + r'\\' + fileName, 'w') as file:
-        header = ','.join(['date', 'rate\n'])
-        file.write(header)
-        file.write(string)
+    dfNew.to_csv(path + r'\\' + fileName, index=False)
