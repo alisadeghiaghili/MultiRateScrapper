@@ -8,7 +8,7 @@ URL = "https://www.tgju.org/"
 page = requests.get(URL)
 
 soup = BeautifulSoup(page.content, "html.parser")
-rate = soup.select("#l-sana_real_sell_usd .info-price")[0].text.replace(',', '')
+rate = soup.select("#l-price_dollar_rl .info-price")[0].text.replace(',', '')
 
 path = r'D:\rate'
 fileName = 'dollarRates.csv'
