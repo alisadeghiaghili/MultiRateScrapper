@@ -1,28 +1,38 @@
 import requests
 from bs4 import BeautifulSoup
-import os
 from datetime import datetime
 import pandas as pd
+import sqlalchemy as sa
+import time
 
 URL = "https://www.tgju.org/"
-page = requests.get(URL)
 
-soup = BeautifulSoup(page.content, "html.parser")
-rate = soup.select("#l-price_dollar_rl .info-price")[0].text.replace(',', '')
-
-path = r'D:\rate'
-fileName = 'dollarRates.csv'
-try:
-    os.listdir(path)
-except FileNotFoundError:
-    os.mkdir(path)
+while True:
+    try:
+        page = requests.get(URL)
+    except:
+        with open("D:\\rateScraper.txt", "a+") as file:
+            file.write(datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S') + "  Could not read data from tgju\n")
+            
+        page = requests.get(URL)
+        time.sleep(2)
+            
+    soup = BeautifulSoup(page.content, "html.parser")
+    try:
+        rate = soup.select("#l-price_dollar_rl .info-price")[0].text.replace(',', '')
+    except IndexError:
+        with open("D:\\rateScraper.txt", "a+") as file:
+            file.write(datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S') + "  css has been changed\n")
+            
+    df = pd.DataFrame(columns = ["datetime", "rate"])
+    df.loc[0] = [datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'), rate]
     
+    config = 'mssql+pyodbc://user:pass@server:port/database?driver=SQL+Server+Native+Client+11.0'
+    engine = sa.create_engine(config)
+    try:
+        df.to_sql("DollarRate", engine, if_exists="append", index=False, dtype=({"datetime": sa.types.CHAR(length=19), "rate": sa.types.INTEGER()}))
+    except:
+        with open("D:\\rateScraper.txt", "a+") as file:
+            file.write(datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S') + "  DB Related Error\n")
     
-dfNew = pd.DataFrame(columns = ["datetime", "rate"])
-dfNew.loc[0] = [datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'), rate]
-try: 
-    dfOld = pd.read_csv(path + r'\\' + fileName)
-    dfAll = pd.concat([dfOld, dfNew])
-    dfAll.to_csv(path + r'\\' + fileName, index=False)
-except FileNotFoundError:
-    dfNew.to_csv(path + r'\\' + fileName, index=False)
+    time.sleep(3600)
