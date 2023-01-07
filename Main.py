@@ -76,4 +76,5 @@ while True:
     except:
         recordExceptionInLogs(logPath, "DB Related Error")
         
+    print("recieved in", extractMomentDateTime())
     time.sleep(3600)
