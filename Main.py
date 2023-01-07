@@ -68,7 +68,7 @@ while True:
     df.loc[6] = [extractMomentDateTime(), brentOilRate, brentOilChangePercent, brentOilChangeAmount, 7]
     df.loc[7] = [extractMomentDateTime(), imamiCoinRate, imamiCoinChangePercent, imamiCoinChangeAmount, 8]
     
-    config = 'mssql+pyodbc://user:pass@server:port/database?driver=SQL+Server+Native+Client+11.0'
+    config = 'mssql+pyodbc://user:pass@server:port/database?driver=ODBC+Driver+18+for+SQL+Server&encrypt=no'
     engine = sa.create_engine(config)
     try:
         df.to_sql("RatesHistory", engine, if_exists="append", index=False, 
