@@ -2,6 +2,7 @@
 """
 Created on Sat Jan  7 13:51:15 2023
 @author: sadeghi.a
+, salehi.m
 """
 import os
 workingDir = r'D:\MultiRateScraper'
