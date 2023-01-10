@@ -23,8 +23,8 @@ while True:
         page = sendRequest(URL)
     except requests.exceptions.SSLError:
         recordExceptionInLogs(logPath, "Could not read data from tgju")
-    except Exception :
-        recordExceptionInLogs(logPath, "Max tries exceeded")
+    except Exception as errorMessage:
+        recordExceptionInLogs(logPath, "Max tries exceeded" + " " + str(errorMessage))
         page = sendRequest(URL)
         time.sleep(180)
             
@@ -72,8 +72,8 @@ while True:
     try:
         df.to_sql("RatesHistory", engine, if_exists="append", index=False, 
                   dtype=({"DateTime": sa.types.CHAR(length=19), "Rate": sa.types.FLOAT(), "ChangePercent": sa.types.FLOAT(), "ChangeAmount": sa.types.FLOAT(), "RateID": sa.types.INTEGER()}))
-    except:
-        recordExceptionInLogs(logPath, "DB Related Error")
+    except Exception as errorMessage:
+        recordExceptionInLogs(logPath, "DB Related Error" + " " + str(errorMessage))
         
     print("recieved in", extractMomentDateTime())
     time.sleep(3600)
