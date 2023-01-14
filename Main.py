@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jan  7 13:51:15 2023
-@author: sadeghi.a, salehi.m
+Created on Sat Jan 14 13:31:44 2023
+@authors: sadeghi.a, salehi.m
 """
 import os
 workingDir = r'D:\MultiRateScraper'
@@ -18,7 +18,8 @@ import time
 URL = "https://www.tgju.org/"
 logPath = "D:\\rateScraper.txt"
 
-while True:
+hour = datetime.now().hour
+if hour > 8 or hour < 22:
     try:
         page = sendRequest(URL)
     except requests.exceptions.SSLError:
@@ -76,4 +77,5 @@ while True:
         recordExceptionInLogs(logPath, "DB Related Error" + " " + str(errorMessage))
         
     print("recieved in", extractMomentDateTime())
-    time.sleep(3600)
+else:
+    print("out of specified time period")
